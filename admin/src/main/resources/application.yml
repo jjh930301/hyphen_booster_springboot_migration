@@ -1,0 +1,42 @@
+server:
+  # forward-headers-strategy: FRAMEWORK
+  tomcat:
+    threads:
+      min-spare: 100
+      max: 1000
+    accept-count: 500
+    connection-timeout: 10
+    max-connections: 2000
+springdoc:
+  swagger-ui:
+    path: /custom-swagger-ui
+spring:
+  config:
+    use-legacy-processing: true
+  profiles:
+    active: development
+  main:
+    allow-circular-references: true
+  datasource:
+    hikari:
+      data-source-properties.useUnicode: true
+      data-source-properties.characterEncoding: UTF-8
+  jpa:
+    show-sql: true
+    hibernate: 
+      ddl-auto: update
+      use-new-id-generator-mappings: false
+    generate-ddl: true
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      additional-paths: .
+      trigger-file: reload.txt
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
