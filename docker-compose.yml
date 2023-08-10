@@ -1,0 +1,38 @@
+version: "3"
+services:
+  mysql:
+    image: "mysql:8.0.21"
+    logging:
+      driver: none
+    restart: always
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    expose:
+      - 3306
+    volumes:
+      - ./mysql/conf.d:/etc/mysql/conf.d
+      - ./mysql/data:/var/lib//mysql
+      - ./mysql/initdb.d:/docker-entrypoint-initdb.d
+    cap_add:
+      - SYS_NICE
+    environment:
+      MYSQL_DATABASE: booster_admin
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: password
+  admin:
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+    container_name: admin
+    env_file: .env
+    environment:
+      - ENV=development
+    restart: always
+    volumes:
+      - "./admin:/usr/src/admin"
+    ports:
+      - 5555:5555
+    depends_on:
+      - mysql
+    
