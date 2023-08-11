@@ -8,6 +8,8 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
+import com.spring.container.spring.enums.TokenEnum;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtBuilder;
@@ -20,17 +22,22 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtUtil{
 
-  public String createAccessToken(
+  public String createToken(
     String id,
     String unique,
-    int token_type
+    int token_type,
+    int type
   ) {
     SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
     Date expireTime  = new Date();
     
     expireTime.setTime(expireTime.getTime() + 1000 * 3600 * 24); // (수정) 배포시 만료시간 30분
 
-    String secretKeyEncodeBase64 = Encoders.BASE64.encode(System.getenv("JWT_SECRET").getBytes());
+    String secretKeyEncodeBase64 = Encoders.BASE64.encode(
+      type == TokenEnum.ACCESS_TOKEN.ordinal() ? 
+      System.getenv("JWT_SECRET").getBytes() : 
+      System.getenv("REFRESH_SECRET").getBytes()
+    );
     byte[] keyBytes = Decoders.BASE64.decode(secretKeyEncodeBase64);
     Key key = Keys.hmacShaKeyFor(keyBytes);
 
@@ -53,37 +60,12 @@ public class JwtUtil{
 
     return builder.compact();
   }
-
-  public String refreshToken(
-    String id,
-    String unique,
-    int type
-  ) {
-    SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-    Date expireTime  = new Date();
-    expireTime.setTime(expireTime.getTime() + 1000 * 3600 * 24 * 14); // 14일간
-
-    String secretKeyEncodeBase64 = Encoders.BASE64.encode(System.getenv("REFRESH_SECRET").getBytes());
-    byte[] keyBytes = Decoders.BASE64.decode(secretKeyEncodeBase64);
-    Key key = Keys.hmacShaKeyFor(keyBytes);
-
-    Map<String, Object> map = new HashMap<String, Object>();
-
-    map.put("id", id);
-    map.put("unique", unique);
-
-    JwtBuilder builder = Jwts.builder()
-      .setClaims(map);
-    
-    builder
-    .setIssuer("hyphen-booster")
-    .signWith(key, signatureAlgorithm);
-
-    return builder.compact();
-  }
-
-  public Claims verifyJWT(String jwt) throws UnsupportedEncodingException {
-    String secretKeyEncodeBase64 = Encoders.BASE64.encode(System.getenv("REFRESH_SECRET").getBytes());
+  public Claims verifyToken(String jwt , int type) throws UnsupportedEncodingException {
+    String secretKeyEncodeBase64 = Encoders.BASE64.encode(
+      TokenEnum.ACCESS_TOKEN.ordinal() == type ? 
+      System.getenv("JWT_SECRET").getBytes() :
+      System.getenv("REFRESH_SECRET").getBytes()
+    );
     byte[] keyBytes = Decoders.BASE64.decode(secretKeyEncodeBase64);
     Key key = Keys.hmacShaKeyFor(keyBytes);
     try {
@@ -99,27 +81,6 @@ public class JwtUtil{
     } catch (Exception e) {
         return null;
     }
-  }   
+  }
 
-  public Map<String, Object> verifyAccessToken(String jwt) throws UnsupportedEncodingException {
-    String secretKeyEncodeBase64 = Encoders.BASE64.encode(System.getenv("JWT_SECRET").getBytes());
-    byte[] keyBytes = Decoders.BASE64.decode(secretKeyEncodeBase64);
-    Key key = Keys.hmacShaKeyFor(keyBytes);
-    Map<String, Object> claimMap = null;
-    try {
-        Claims claims = Jwts
-                .parser()
-                .setSigningKey(key) // Set Key
-                .parseClaimsJws(jwt) // 파싱 및 검증, 실패 시 에러
-                .getBody();
-
-        claimMap = claims;
-
-    } catch (ExpiredJwtException e) { // 토큰이 만료되었을 경우
-        return null;
-    } catch (Exception e) { // 그외 에러났을 경우
-        return null;
-    }
-    return claimMap;
-  }   
 }

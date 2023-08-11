@@ -7,7 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import com.spring.container.spring.enums.TokenEnum;
 import com.spring.container.spring.utils.JwtUtil;
+
+import io.jsonwebtoken.Claims;
 
 @Component
 public class JwtInterceptor implements HandlerInterceptor{
@@ -17,11 +20,12 @@ public class JwtInterceptor implements HandlerInterceptor{
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
     String authorizationHeader = request.getHeader("Authorization");
-    System.out.println(authorizationHeader);
     if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
       String jwtToken = authorizationHeader.substring(7);
-      jwtUtil.verifyJWT(jwtToken);
-
+      Claims claims = jwtUtil.verifyToken(jwtToken , TokenEnum.ACCESS_TOKEN.ordinal());
+      request.setAttribute("id", claims.get("id"));
+      request.setAttribute("unique", claims.get("unique"));
+      request.setAttribute("token_type", claims.get("token_type"));
       return true;
     } else {
       response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
