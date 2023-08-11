@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Primary;
 @Configuration
 public class DatabaseConfig {
   private final String DB_URI = System.getenv("DB_URI");
-  private final String ADMIN_DB = System.getenv("BOOSTER_DB");
-  private final String BOOSTER_DB = System.getenv("ADMIN_DB");
+  private final String ADMIN_DB = System.getenv("ADMIN_DB");
+  private final String BOOSTER_DB = System.getenv("BOOSTER_DB");
   private final String DB_USER = System.getenv("DB_USER");
   private final String DB_PASSWORD = System.getenv("DB_PASSWORD");
 

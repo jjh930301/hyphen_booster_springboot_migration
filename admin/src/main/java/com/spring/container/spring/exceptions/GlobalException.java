@@ -9,15 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 @RestControllerAdvice
 public class GlobalException {
 
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<String> globalException(Exception e) {
-    ObjectMapper mapper = new ObjectMapper();
+  public ResponseEntity<Map<String , Object>> globalException(Exception e) {
     Map<String, Object> map = new HashMap<>();
     if(e instanceof TransactionException) {
       TransactionException except = (TransactionException)e;
@@ -28,12 +24,7 @@ public class GlobalException {
       map.put("messages", Arrays.asList(e.toString()));
     }
     map.put("payload", null);
-    try {
-      String json = mapper.writeValueAsString(map);
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(json);
-    } catch (JsonProcessingException e1) {
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
-    }
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
   }
 
 }
