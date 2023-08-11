@@ -1,5 +1,7 @@
 package com.spring.container.spring.entities;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,14 +13,18 @@ import org.springframework.data.annotation.CreatedDate;
 
 import com.spring.container.spring.constants.Constant;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Builder
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "admin_users" , schema = "booster_admin")
 public class AdminUserEntity {
   @Id
@@ -95,25 +101,30 @@ public class AdminUserEntity {
 
   @Column(
     name = "login_at",
-    nullable = false,
-    columnDefinition = "datetime COMMENT '최근 로그인'"
+    nullable = true,
+    columnDefinition = "datetime DEFAULT NULL COMMENT '최근 로그인'"
   )
-  private String loginAt;
+  private LocalDateTime loginAt;
 
   @Column(
     name = "stoped_at",
-    nullable = false,
-    columnDefinition = "datetime COMMENT '중지일'"
+    nullable = true,
+    columnDefinition = "datetime DEFAULT NULL COMMENT '중지일'"
   )
-  private String stopedAt;
+  private LocalDateTime stopedAt;
 
   @Column(
     name = "terminated_at",
-    nullable = false,
-    columnDefinition = "datetime COMMENT '중지일'"
+    nullable = true,
+    columnDefinition = "datetime DEFAULT NULL COMMENT '해지일'"
   )
-  private String terminatedAt;
+  private LocalDateTime terminatedAt;
 
+  @Column(
+    name = "created_at",
+    nullable = true,
+    columnDefinition = "datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) COMMENT '생성일'"
+  )
   @CreatedDate
-  private String createdAt;
+  private LocalDateTime createdAt;
 }
