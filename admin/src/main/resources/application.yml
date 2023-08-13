@@ -1,12 +1,3 @@
-server:
-  # forward-headers-strategy: FRAMEWORK
-  tomcat:
-    threads:
-      min-spare: 100
-      max: 1000
-    accept-count: 500
-    connection-timeout: 10
-    max-connections: 2000
 springdoc:
   swagger-ui:
     path: /custom-swagger-ui
