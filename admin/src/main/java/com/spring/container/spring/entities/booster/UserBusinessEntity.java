@@ -1,4 +1,4 @@
-package com.spring.container.spring.entities;
+package com.spring.container.spring.entities.booster;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

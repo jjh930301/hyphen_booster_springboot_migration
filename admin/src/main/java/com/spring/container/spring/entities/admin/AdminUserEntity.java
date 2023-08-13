@@ -1,4 +1,4 @@
-package com.spring.container.spring.entities;
+package com.spring.container.spring.entities.admin;
 
 import java.time.LocalDateTime;
 
@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PersistenceUnit;
 import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -25,6 +26,7 @@ import lombok.Setter;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@PersistenceUnit(name = "")
 @Table(name = "admin_users" , schema = "booster_admin")
 public class AdminUserEntity {
   @Id
