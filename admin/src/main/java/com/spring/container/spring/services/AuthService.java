@@ -7,13 +7,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.spring.container.spring.dtos.RegistAdminUserDto;
-import com.spring.container.spring.entities.AdminUserEntity;
+import com.spring.container.spring.entities.admin.AdminUserEntity;
 import com.spring.container.spring.enums.TokenEnum;
-import com.spring.container.spring.repositories.AdminUserRepository;
+import com.spring.container.spring.repositories.admin.AdminUserRepository;
 import com.spring.container.spring.utils.JwtUtil;
 
 @Service
 public class AuthService {
+
   @Autowired
   private AdminUserRepository adminUserRepository;
   @Autowired

@@ -4,14 +4,13 @@ import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spring.container.spring.dtos.LoginDto;
-import com.spring.container.spring.entities.AdminUserEntity;
+import com.spring.container.spring.entities.admin.AdminUserEntity;
 import com.spring.container.spring.enums.TokenEnum;
 import com.spring.container.spring.responses.AdminModel;
 import com.spring.container.spring.responses.LoginResponse;
@@ -24,6 +23,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import reactor.core.publisher.Mono;
 
 @Tag(name = "admin")
 @RestController
@@ -55,12 +55,14 @@ public class AdminController {
   @PostMapping(
     path = "/login"
   )
-  public ResponseEntity<?> login(
+  public Mono<?> login(
     @RequestBody LoginDto dto
   ) {
     AdminUserEntity model = this.adminService.login(dto);
+    ApiRes response = new ApiRes(4000, Arrays.asList("bad request"), "null");
     if(model == null) {
-      return ResponseEntity.badRequest().body(new ApiRes(4000, Arrays.asList("bad request"), null));
+      // return Mono.just(new ApiRes(4000, Arrays.asList("bad request"), null));
+      return Mono.just(response);
     }
     String accessToken = this.jwtUtil.createToken(model.getUserId(), model.getEmail(), model.getType(), TokenEnum.ACCESS_TOKEN.ordinal());
     LoginResponse responseModel = LoginResponse.builder()
@@ -80,7 +82,7 @@ public class AdminController {
       .access_token(accessToken)
       .refresh_token(model.getRefreshToken())
       .build();
-    ApiRes response = new ApiRes(2000 , Arrays.asList("Succssfully login") , responseModel);
-    return ResponseEntity.ok(response);
+    response = new ApiRes(2000 , Arrays.asList("Succssfully login") , responseModel);
+    return Mono.just(response);
   }
 }

@@ -60,7 +60,7 @@ public class JwtUtil{
 
     return builder.compact();
   }
-  public Claims verifyToken(String jwt , int type) throws UnsupportedEncodingException {
+  public Claims verifyToken(String jwt , int type){
     String secretKeyEncodeBase64 = Encoders.BASE64.encode(
       TokenEnum.ACCESS_TOKEN.ordinal() == type ? 
       System.getenv("JWT_SECRET").getBytes() :

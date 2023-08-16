@@ -7,11 +7,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.spring.container.spring.dtos.LoginDto;
-import com.spring.container.spring.entities.AdminUserEntity;
-import com.spring.container.spring.repositories.AdminUserRepository;
+import com.spring.container.spring.entities.admin.AdminUserEntity;
+import com.spring.container.spring.repositories.admin.AdminUserRepository;
 
 @Service
 public class AdminService {
+
   @Autowired
   private AdminUserRepository adminUserRepository;
   @Autowired
@@ -22,7 +23,6 @@ public class AdminService {
     if(adminUser == null) {
       return null;
     }
-    
     boolean checkPassword = passwordEncoder.matches(dto.getPassword(),adminUser.getPassword());
     if(!checkPassword) {
       return null;
