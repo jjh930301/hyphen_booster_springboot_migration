@@ -99,6 +99,13 @@ public class UserEntity{
   private int type;
 
   @Column(
+    name = "gender",
+    nullable = false,
+    columnDefinition = "tinyint NOT NULL DEFAULT '0' COMMENT '성별'"
+  )
+  private int gender;
+
+  @Column(
     name = "kakao_alert",
     nullable = true,
     columnDefinition = "tinyint default 0 COMMENT '0 : 수신 1 : 비수신'"
